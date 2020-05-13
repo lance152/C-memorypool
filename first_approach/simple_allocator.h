@@ -3,6 +3,13 @@
 class simple_allocator
 {
 private:
+
+  //嵌入式指针
+  //借用小区块的前n个字节存储下一个空闲区块的地址
+  //这里需要的空间取决于指针的大小
+  //前提条件是小区块的大小要至少大于一个指针的大小
+  //当小区块分配出去后就不再需要这个空间了所以这个空间可以正常存储
+
   struct free_element
   {
     struct free_element * next;
@@ -20,7 +27,7 @@ public:
     if(!free_store){
       //链表为空，创建一个新的大区块
       size_t big_chunk_size = num_chunk * size;
-      free_store = e = reinterpret_cast<free_element *>(malloc(big_chunk_size));
+      free_store = reinterpret_cast<free_element *>(malloc(big_chunk_size));
 
       //构建链表
       for(int i=0;i<num_chunk-1;i++){
