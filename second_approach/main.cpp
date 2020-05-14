@@ -1,4 +1,7 @@
 #include <iostream>
+#include <ctime>
+
+using namespace std;
 
 template<typename T,int num = 50>
 class allocPool
@@ -55,12 +58,39 @@ private:
   int m_value;
 };
 
+class cmyInt2
+{
+public:
+  cmyInt2(){
+    m_value = 0;
+  }
+private:
+  int m_value;
+};
+
 template<typename T,int num>
 unsigned char* allocPool<T,num>::m_pointer=nullptr;
 
+
 int main()
 {
-  cmyInt* p = new cmyInt;
-  delete p;
-  return 0;
+  clock_t start;
+  int count = 10e7;
+  cmyInt2* p2 = nullptr;
+  start = clock();
+  for(int i=0;i<count;i++){
+    p2=new cmyInt2;
+    delete p2;
+  }
+  cout<<"Default time: ";
+  cout<<(((double)clock()-start)/CLOCKS_PER_SEC)<<"\n\n";
+
+  cmyInt* p = nullptr;
+  start = clock();
+  for(int i=0;i<count;i++){
+     p = new cmyInt;
+     delete p;
+  }
+  cout<<"allocPool time: ";
+  cout<<(((double)clock()-start)/CLOCKS_PER_SEC)<<"\n\n";
 }
